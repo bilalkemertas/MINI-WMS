@@ -1,6 +1,11 @@
 import streamlit as st
+import ana_sayfa
+import modul_sayim
+import modul_stok
+import modul_uretim
+import modul_rapor
 
-# INIT
+# ---------------- INIT ----------------
 if "user" not in st.session_state:
     st.session_state.user = None
 
@@ -8,18 +13,16 @@ if "page" not in st.session_state:
     st.session_state.page = "login"
 
 
-# -------------------------
-# LOGIN
-# -------------------------
+# ---------------- LOGIN ----------------
 def login():
     st.title("Login")
 
     users = st.secrets["users"]
 
-    username = st.text_input("User")
-    password = st.text_input("Pass", type="password")
+    username = st.text_input("Kullanıcı")
+    password = st.text_input("Şifre", type="password")
 
-    if st.button("Login"):
+    if st.button("Giriş"):
         if username in users and users[username] == password:
             st.session_state.user = username
             st.session_state.page = "home"
@@ -28,24 +31,25 @@ def login():
             st.error("Hatalı giriş")
 
 
-# -------------------------
-# HOME
-# -------------------------
-def home():
-    st.title("WMS Home")
-    st.write(f"User: {st.session_state.user}")
+# ---------------- ROUTER ----------------
+def router():
+    if st.session_state.page == "login":
+        login()
 
-    if st.button("Logout"):
-        st.session_state.user = None
-        st.session_state.page = "login"
-        st.rerun()
+    elif st.session_state.page == "home":
+        ana_sayfa.goster()
+
+    elif st.session_state.page == "sayim":
+        modul_sayim.goster()
+
+    elif st.session_state.page == "stok":
+        modul_stok.goster()
+
+    elif st.session_state.page == "uretim":
+        modul_uretim.goster()
+
+    elif st.session_state.page == "rapor":
+        modul_rapor.goster()
 
 
-# -------------------------
-# ROUTER
-# -------------------------
-if st.session_state.page == "login":
-    login()
-
-elif st.session_state.page == "home":
-    home()
+router()
