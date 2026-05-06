@@ -1,25 +1,51 @@
-from database import get_conn
+import streamlit as st
 
-if st.session_state.user is None:
-    st.title("MINI WMS LOGIN")
+# INIT
+if "user" not in st.session_state:
+    st.session_state.user = None
 
-    u = st.text_input("User")
-    p = st.text_input("Password", type="password")
+if "page" not in st.session_state:
+    st.session_state.page = "login"
+
+
+# -------------------------
+# LOGIN
+# -------------------------
+def login():
+    st.title("Login")
+
+    users = st.secrets["users"]
+
+    username = st.text_input("User")
+    password = st.text_input("Pass", type="password")
 
     if st.button("Login"):
-        conn = get_conn()
-        cur = conn.cursor()
-
-        cur.execute(
-            "SELECT * FROM users WHERE username=? AND password=?",
-            (u, p)
-        )
-
-        res = cur.fetchone()
-        conn.close()
-
-        if res:
-            st.session_state.user = u
+        if username in users and users[username] == password:
+            st.session_state.user = username
+            st.session_state.page = "home"
             st.rerun()
         else:
             st.error("Hatalı giriş")
+
+
+# -------------------------
+# HOME
+# -------------------------
+def home():
+    st.title("WMS Home")
+    st.write(f"User: {st.session_state.user}")
+
+    if st.button("Logout"):
+        st.session_state.user = None
+        st.session_state.page = "login"
+        st.rerun()
+
+
+# -------------------------
+# ROUTER
+# -------------------------
+if st.session_state.page == "login":
+    login()
+
+elif st.session_state.page == "home":
+    home()
