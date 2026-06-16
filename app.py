@@ -11,8 +11,8 @@ menu = st.sidebar.selectbox(
 )
 
 if menu == "Sayım":
-    import modul_sayim
-    modul_sayim.show()
+    import modul/sayim
+    modul/sayim.show()
 
 elif menu == "Stok":
     import modul_stok
