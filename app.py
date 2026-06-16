@@ -1,5 +1,5 @@
 import streamlit as st
-import anasayfa
+import ana_sayfa
 import modul_sayim
 import modul_stok
 import modul_uretim
