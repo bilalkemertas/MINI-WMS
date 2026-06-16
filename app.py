@@ -1,5 +1,5 @@
 import streamlit as st
-def modul_sayim.show()
+modul_sayim.show()
 
 st.set_page_config(page_title="MINI WMS", layout="wide")
 
