@@ -6,7 +6,7 @@ import random
 from datetime import datetime
 
 def show():
-    pass
+    goster()
 
 def go_home():
     st.session_state.page = 'main'
