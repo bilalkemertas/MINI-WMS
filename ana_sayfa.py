@@ -1,5 +1,53 @@
 import streamlit as st
+import pandas as pd
+import veritabani
 
-def show():
-    st.title("Mini WMS Ana Sayfa")
-    st.write("Sistem çalışıyor")
+def go_stok(): st.session_state.page = 'stok'
+def go_uretim(): st.session_state.page = 'uretim'
+def go_rapor(): st.session_state.page = 'rapor'
+def go_sayim(): 
+    st.cache_data.clear()
+    st.session_state.page = 'sayim'
+
+def goster():
+    st.markdown("<h3 style='text-align:center;'>📦 Depo Kontrol Merkezi</h3>", unsafe_allow_html=True)
+    
+    # Veri çekme ve metrikler
+    df_ana = veritabani.get_internal_data("Stok")
+    m1, m2 = st.columns(2)
+    
+    sku_count, total_stok = 0, 0
+    if not df_ana.empty:
+        if 'Kod' in df_ana.columns: sku_count = len(df_ana['Kod'].unique())
+        if 'Miktar' in df_ana.columns: total_stok = pd.to_numeric(df_ana['Miktar'], errors='coerce').sum()
+
+    m1.metric("SKU Çeşitliliği", sku_count)
+    m2.metric("Toplam Stok", f"{total_stok:,.0f}")
+    
+    st.markdown("---")
+    
+    # Menü Butonları
+    c1, c2 = st.columns(2)
+    with c1:
+        st.button("📊 STOK İŞLEMLERİ", use_container_width=True, type="primary", on_click=go_stok)
+        st.button("🏭 ÜRETİM HAZIRLIK", use_container_width=True, type="primary", on_click=go_uretim)
+    with c2:
+        st.button("📝 SAYIM SİSTEMİ", use_container_width=True, type="primary", on_click=go_sayim)
+        st.button("📈 RAPOR VE ARŞİV", use_container_width=True, type="primary", on_click=go_rapor)
+
+    # ==========================================
+    # İMZA ALANI (FONKSİYONUN İÇİNDE EN ALTTA)
+    # ==========================================
+    st.markdown("<br><br>", unsafe_allow_html=True) # Butonlardan sonra biraz boşluk
+    st.markdown("---")
+    col_sign1, col_sign2 = st.columns([3, 1])
+    with col_sign2:
+        st.markdown(
+            """
+            <div style='text-align: right;'>
+                <p style='margin:0; font-size: 14px; font-weight: bold; color: #1f77b4;'>🚀 Bilal Kemertaş</p>
+                <p style='margin:0; font-size: 12px; color: gray;'>BRN 2026</p>
+            </div>
+            """, 
+            unsafe_allow_html=True
+        )
